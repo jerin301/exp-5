@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI and Robotics Blog</title>
+
+<style>
+
+/* GENERAL STYLING */
+
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f0f4f8;
+    color: #222;
+}
+
+/* HEADER */
+
+header {
+    background: linear-gradient(135deg, #101c3d, #176b87);
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 35px;
+}
+
+header p {
+    margin-top: 10px;
+}
+
+/* SECTION */
+
+section {
+    max-width: 950px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+/* SEARCH AND FILTER */
+
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.controls input,
+.controls select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+.controls input {
+    flex: 1 1 300px;
+}
+
+/* FORM */
+
+.form-section fieldset {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.form-section label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.form-section input,
+.form-section select,
+.form-section textarea {
+    width: 100%;
+    padding: 11px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* BUTTONS */
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 11px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#addBtn {
+    background: #176b87;
+    color: white;
+}
+
+#addBtn:hover {
+    background: #101c3d;
+}
+
+#clearBtn {
+    background: #d9534f;
+    color: white;
+}
+
+#clearBtn:hover {
+    background: #a93226;
+}
+
+/* ERROR */
+
+.error {
+    color: red;
+    margin-left: 10px;
+}
+
+/* STATISTICS */
+
+.stats {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+}
+
+.stats p {
+    margin: 10px 0;
+}
+
+#totalCount,
+#avgRating,
+#topArticle {
+    font-weight: bold;
+    color: #176b87;
+}
+
+/* ARTICLE CARDS */
+
+#articleContainer {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(260px, 1fr)
+    );
+    gap: 18px;
+}
+
+.article-card {
+    background: white;
+    border-left: 5px solid #176b87;
+    border-radius: 9px;
+    padding: 18px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.article-card h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+}
+
+.category {
+    display: inline-block;
+    background: #dceef5;
+    color: #176b87;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.stars {
+    color: #f1b500;
+    margin: 8px 0;
+}
+
+.description {
+    color: #444;
+    line-height: 1.5;
+}
+
+.delete-btn {
+    background: #eee;
+    color: #d9534f;
+    padding: 6px 10px;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background: #d9534f;
+    color: white;
+}
+
+/* NO RESULTS */
+
+.no-results {
+    text-align: center;
+    color: #888;
+}
+
+/* FOOTER */
+
+footer {
+    background: #101c3d;
+    color: white;
+    text-align: center;
+    padding: 18px;
+    margin-top: 35px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media(max-width: 600px) {
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>🤖 AI & Robotics Blog</h1>
+
+    <p>
+        Explore Artificial Intelligence and
+        Future Robotics Technology
+    </p>
+
+</header>
+
+
+<!-- SEARCH AND FILTER -->
+
+<section class="controls">
+
+    <input
+        type="text"
+        id="searchBox"
+        placeholder="Search articles by title..."
+    >
+
+    <select id="filterCategory">
+
+        <option value="all">All Categories</option>
+
+        <option value="Artificial Intelligence">
+            Artificial Intelligence
+        </option>
+
+        <option value="Robotics">
+            Robotics
+        </option>
+
+        <option value="Machine Learning">
+            Machine Learning
+        </option>
+
+        <option value="Automation">
+            Automation
+        </option>
+
+        <option value="Technology">
+            Technology
+        </option>
+
+    </select>
+
+    <button id="clearBtn">
+        Clear All Articles
+    </button>
+
+</section>
+
+
+<!-- ADD ARTICLE FORM -->
+
+<section class="form-section">
+
+    <h2>📝 Add a New Article</h2>
+
+    <fieldset>
+
+        <label>
+            Article Title:
+
+            <input
+                type="text"
+                id="articleTitle"
+                placeholder="Enter article title"
+            >
+        </label>
+
+
+        <label>
+            Category:
+
+            <select id="articleCategory">
+
+                <option value="Artificial Intelligence">
+                    Artificial Intelligence
+                </option>
+
+                <option value="Robotics">
+                    Robotics
+                </option>
+
+                <option value="Machine Learning">
+                    Machine Learning
+                </option>
+
+                <option value="Automation">
+                    Automation
+                </option>
+
+                <option value="Technology">
+                    Technology
+                </option>
+
+            </select>
+        </label>
+
+
+        <label>
+            Rating:
+
+            <select id="articleRating">
+
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+
+            </select>
+        </label>
+
+
+        <label>
+            Article Description:
+
+            <textarea
+                id="articleDescription"
+                rows="4"
+                placeholder="Write your article here..."
+            ></textarea>
+
+        </label>
+
+
+        <button id="addBtn">
+            Add Article
+        </button>
+
+        <span id="errorMsg" class="error"></span>
+
+    </fieldset>
+
+</section>
+
+
+<!-- BLOG STATISTICS -->
+
+<section class="stats">
+
+    <h2>📊 Blog Statistics</h2>
+
+    <p>
+        Total Articles:
+        <span id="totalCount">0</span>
+    </p>
+
+    <p>
+        Average Rating:
+        <span id="avgRating">0.0</span> ⭐
+    </p>
+
+    <p>
+        Highest Rated Article:
+        <span id="topArticle">—</span>
+    </p>
+
+</section>
+
+
+<!-- ARTICLES DISPLAY -->
+
+<section class="articles-section">
+
+    <h2>🚀 Latest AI & Robotics Articles</h2>
+
+    <div id="articleContainer"></div>
+
+    <p
+        id="noResults"
+        class="no-results"
+        style="display:none;"
+    >
+        No articles found.
+    </p>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        © 2026 AI & Robotics Blog |
+        Web Technology Lab
+    </p>
+
+    <p>
+        Developed by Jerin Jones |
+        URK24CS1281
+    </p>
+
+</footer>
+
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+/* 1. GET ELEMENT REFERENCES */
+
+const articleTitle =
+document.getElementById("articleTitle");
+
+const articleCategory =
+document.getElementById("articleCategory");
+
+const articleRating =
+document.getElementById("articleRating");
+
+const articleDescription =
+document.getElementById("articleDescription");
+
+const addBtn =
+document.getElementById("addBtn");
+
+const clearBtn =
+document.getElementById("clearBtn");
+
+const errorMsg =
+document.getElementById("errorMsg");
+
+const articleContainer =
+document.getElementById("articleContainer");
+
+const noResults =
+document.getElementById("noResults");
+
+const searchBox =
+document.getElementById("searchBox");
+
+const filterCategory =
+document.getElementById("filterCategory");
+
+const totalCount =
+document.getElementById("totalCount");
+
+const avgRating =
+document.getElementById("avgRating");
+
+const topArticle =
+document.getElementById("topArticle");
+
+
+/* 2. DATA STORE */
+
+let articles = [];
+
+
+/* 3. ADD NEW ARTICLE */
+
+function addArticle() {
+
+    const title =
+    articleTitle.value.trim();
+
+    const category =
+    articleCategory.value;
+
+    const rating =
+    parseInt(articleRating.value);
+
+    const description =
+    articleDescription.value.trim();
+
+
+    if (title === "" || description === "") {
+
+        errorMsg.textContent =
+        "Please enter article title and description.";
+
+        return;
+    }
+
+    errorMsg.textContent = "";
+
+
+    const article = {
+
+        id: Date.now(),
+
+        title: title,
+
+        category: category,
+
+        rating: rating,
+
+        description: description
+
+    };
+
+
+    articles.push(article);
+
+
+    articleTitle.value = "";
+
+    articleDescription.value = "";
+
+    articleRating.value = "5";
+
+
+    renderArticles();
+
+    updateStats();
+
+}
+
+
+/* 4. DISPLAY ARTICLES */
+
+function renderArticles() {
+
+    const searchTerm =
+    searchBox.value.toLowerCase().trim();
+
+    const categoryFilter =
+    filterCategory.value;
+
+
+    const filtered = articles.filter(function(a) {
+
+        const matchesSearch =
+        a.title.toLowerCase().includes(searchTerm);
+
+        const matchesCategory =
+        categoryFilter === "all" ||
+        a.category === categoryFilter;
+
+        return matchesSearch && matchesCategory;
+
+    });
+
+
+    articleContainer.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        noResults.style.display = "block";
+
+        return;
+
+    }
+
+
+    noResults.style.display = "none";
+
+
+    filtered.forEach(function(a) {
+
+        const card =
+        document.createElement("div");
+
+        card.className = "article-card";
+
+
+        const titleEl =
+        document.createElement("h3");
+
+        titleEl.textContent = a.title;
+
+
+        const categoryEl =
+        document.createElement("span");
+
+        categoryEl.className = "category";
+
+        categoryEl.textContent = a.category;
+
+
+        const starsEl =
+        document.createElement("div");
+
+        starsEl.className = "stars";
+
+        starsEl.textContent =
+        "★".repeat(a.rating) +
+        "☆".repeat(5 - a.rating);
+
+
+        const descriptionEl =
+        document.createElement("p");
+
+        descriptionEl.className = "description";
+
+        descriptionEl.textContent = a.description;
+
+
+        const deleteBtn =
+        document.createElement("button");
+
+        deleteBtn.className = "delete-btn";
+
+        deleteBtn.textContent = "✖ Delete";
+
+
+        /* DELETE EVENT */
+
+        deleteBtn.addEventListener("click", function() {
+
+            deleteArticle(a.id);
+
+        });
+
+
+        card.appendChild(titleEl);
+
+        card.appendChild(categoryEl);
+
+        card.appendChild(starsEl);
+
+        card.appendChild(descriptionEl);
+
+        card.appendChild(deleteBtn);
+
+
+        articleContainer.appendChild(card);
+
+    });
+
+}
+
+
+/* 5. DELETE ARTICLE */
+
+function deleteArticle(id) {
+
+    articles = articles.filter(function(a) {
+
+        return a.id !== id;
+
+    });
+
+    renderArticles();
+
+    updateStats();
+
+}
+
+
+/* 6. UPDATE STATISTICS */
+
+function updateStats() {
+
+    const total = articles.length;
+
+    totalCount.textContent = total;
+
+
+    if (total === 0) {
+
+        avgRating.textContent = "0.0";
+
+        topArticle.textContent = "—";
+
+        return;
+
+    }
+
+
+    /* AVERAGE RATING */
+
+    const sum = articles.reduce(function(acc, a) {
+
+        return acc + a.rating;
+
+    }, 0);
+
+
+    avgRating.textContent =
+    (sum / total).toFixed(1);
+
+
+    /* HIGHEST RATED ARTICLE */
+
+    let best = articles[0];
+
+
+    articles.forEach(function(a) {
+
+        if (a.rating > best.rating) {
+
+            best = a;
+
+        }
+
+    });
+
+
+    topArticle.textContent =
+    best.title + " (" + best.rating + "★)";
+
+}
+
+
+/* 7. EVENT LISTENERS */
+
+
+/* ADD BUTTON EVENT */
+
+addBtn.addEventListener("click", addArticle);
+
+
+/* SEARCH EVENT */
+
+searchBox.addEventListener("keyup", renderArticles);
+
+
+/* CATEGORY CHANGE EVENT */
+
+filterCategory.addEventListener("change", renderArticles);
+
+
+/* CLEAR ALL ARTICLES EVENT */
+
+clearBtn.addEventListener("click", function() {
+
+    if (articles.length === 0) return;
+
+    if (confirm("Are you sure you want to delete all articles?")) {
+
+        articles = [];
+
+        renderArticles();
+
+        updateStats();
+
+    }
+
+});
+
+
+/* ENTER KEY EVENT */
+
+articleTitle.addEventListener("keypress", function(e) {
+
+    if (e.key === "Enter") {
+
+        e.preventDefault();
+
+        addArticle();
+
+    }
+
+});
+
+
+/* 8. INITIAL LOAD */
+
+window.addEventListener("load", function() {
+
+
+    articles.push({
+
+        id: 1,
+
+        title: "Introduction to Artificial Intelligence",
+
+        category: "Artificial Intelligence",
+
+        rating: 5,
+
+        description:
+        "Artificial Intelligence enables machines to learn, think and perform tasks that normally require human intelligence."
+
+    });
+
+
+    articles.push({
+
+        id: 2,
+
+        title: "Future of Robotics Technology",
+
+        category: "Robotics",
+
+        rating: 5,
+
+        description:
+        "Robotics combines engineering and computer science to design intelligent machines that perform different tasks."
+
+    });
+
+
+    articles.push({
+
+        id: 3,
+
+        title: "Machine Learning Applications",
+
+        category: "Machine Learning",
+
+        rating: 4,
+
+        description:
+        "Machine Learning allows computers to learn from data and improve their performance without explicit programming."
+
+    });
+
+
+    renderArticles();
+
+    updateStats();
+
+});
+
+</script>
+
+</body>
+</html>
